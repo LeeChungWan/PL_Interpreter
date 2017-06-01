@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from string import letters, digits, whitespace
+MyDiction = dict()
 
 
 class CuteType:
@@ -682,6 +683,17 @@ def Test_method(input):
     print print_node(cute_inter)
 
 
+    
+def insertTable(key, value):
+    MyDiction[key] = value
+
+    
+    
+def lookupTable(key):
+    return MyDiction[key]
+
+
+  
 def run_intertpreter():
     while 1 is 1:
         test_input = raw_input(">")
@@ -689,6 +701,3 @@ def run_intertpreter():
         Test_method(test_input)
 
 run_intertpreter()
-
-
-
