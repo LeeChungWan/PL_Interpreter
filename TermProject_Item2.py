@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from string import letters, digits, whitespace
+MyDiction = dict()
 
 
 class CuteType:
@@ -682,20 +683,18 @@ def Test_method(input):
     print print_node(cute_inter)
 
 
-def Test_All():
-    Test_method("(+ 1 2 )")
-    Test_method("(- ( + 1 2 ) 4 )")
-    Test_method("(* 3 2 )")
-    Test_method("(/ 10 2 )")
-    Test_method("(< 1 5 )")
-    Test_method("(= 3 ( + 1 2 ) )")
-    Test_method("(> 1 5 )")
-    Test_method("(not #F )")
-    Test_method("(null? '( 1 2 3) )")
-    Test_method("(cond (#F 1) ( #T 2 ) )")
-    Test_method("(cond ( ( null? ' ( 1 2 3 ) ) 1 ) ( ( > 100 10 ) 2 ) ( #T 3 ) )")
-
-Test_All()
+def insertTable(key, value):
+    MyDiction[key] = value
 
 
+def lookupTable(key):
+    return MyDiction[key]
 
+
+def run_intertpreter():
+    while 1 is 1:
+        test_input = raw_input(">")
+        sys.stdout.write("... ")
+        Test_method(test_input)
+
+run_intertpreter()
