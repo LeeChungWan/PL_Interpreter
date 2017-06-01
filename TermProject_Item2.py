@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from string import letters, digits, whitespace
+MyDiction = dict()
 
 
 class CuteType:
@@ -437,9 +438,6 @@ def run_func(op_code_node):
             return Node(TokenType.TRUE)
         return Node(TokenType.FALSE)
 
-    # Fill Out
-    # table을 보고 함수를 작성하시오
-
     def not_op(node):
         l_node = node.value.next
         if l_node.type is True:
@@ -449,51 +447,60 @@ def run_func(op_code_node):
     def plus(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)  # list의 Operator를 계산해주어 반환.
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         result = int(l_node.value) + int(r_node.value)
         return Node(TokenType.INT, result)
 
     def minus(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)  # list의 Operator를 계산해주어 반환.
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         result = int(l_node.value) - int(r_node.value)
         return Node(TokenType.INT, result)
 
     def multiple(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)  # list의 Operator를 계산해주어 반환.
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         result = int(l_node.value) * int(r_node.value)
         return Node(TokenType.INT, result)
 
     def divide(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)  # list의 Operator를 계산해주어 반환.
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         result = int(l_node.value) / int(r_node.value)
         return Node(TokenType.INT, result)
 
     def lt(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
-
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         if int(l_node.value) < int(r_node.value):
             return Node(TokenType.TRUE)
         return Node(TokenType.FALSE)
@@ -501,11 +508,12 @@ def run_func(op_code_node):
     def gt(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
-
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         if int(l_node.value) > int(r_node.value):
             return Node(TokenType.TRUE)
         return Node(TokenType.FALSE)
@@ -513,11 +521,12 @@ def run_func(op_code_node):
     def eq(node):
         l_node = node.value.next
         r_node = l_node.next
-        if l_node.type is TokenType.LIST:
-            l_node = run_expr(l_node)
-        if r_node.type is TokenType.LIST:
-            r_node = run_expr(r_node)
-
+        l_node = run_expr(l_node)
+        r_node = run_expr(r_node)
+        if l_node.value.isalpha():
+            l_node = lookupTable(l_node.value)
+        if r_node.value.isalpha():
+            r_node = lookupTable(r_node.value)
         if int(l_node.value) == int(r_node.value):
             return Node(TokenType.TRUE)
         return Node(TokenType.FALSE)
@@ -559,6 +568,20 @@ def run_func(op_code_node):
         quote_list.next = new_value_list
         return wrapper_new_list
 
+    def define(node):
+        l_node = node.value.next
+        r_node = l_node.next
+        # key 값으로 전달되는 것은 문자여야해서 value로한다.
+        # 만약 .value를 안붙여 노드가 key로 들어가면 나중에 문제가 된다.
+        key = run_expr(l_node).value
+        r_node = run_expr(r_node)
+        # qoute일때는 isalpha()가 실행이 안된다.
+        if r_node.type is TokenType.ID:
+            if r_node.value.isalpha():
+                r_node = lookupTable(r_node.value)
+        insertTable(key, r_node)
+        return r_node
+
     table = {}
     table['cons'] = cons
     table["'"] = quote
@@ -577,6 +600,7 @@ def run_func(op_code_node):
     table['>'] = gt
     table['='] = eq
     table['cond'] = cond
+    table['define'] = define
 
     return table[op_code_node.value]
 
@@ -682,6 +706,14 @@ def Test_method(input):
     print print_node(cute_inter)
 
 
+def insertTable(key, value):
+    MyDiction[key] = value
+
+
+def lookupTable(key):
+    return MyDiction[key]
+
+
 def run_intertpreter():
     while 1 is 1:
         test_input = raw_input(">")
@@ -689,6 +721,3 @@ def run_intertpreter():
         Test_method(test_input)
 
 run_intertpreter()
-
-
-
